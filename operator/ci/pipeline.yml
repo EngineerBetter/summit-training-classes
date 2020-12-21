@@ -9,8 +9,17 @@ jobs:
     file: summit-training-classes/operator/ci/build.yml
   - put: cf
     params:
+      command: push
+      strategy: rolling
       manifest: summit-training-classes/operator/ci/manifest.yml
       path: built/
+
+resource_types:
+- name: cf
+  type: registry-image
+  source:
+    repository: nulldriver/cf-cli-resource
+    tag: latest
 
 resources:
 - name: summit-training-classes
@@ -27,6 +36,6 @@ resources:
     api: ((cf-api))
     username: ((cf-username))
     password: ((cf-password))
-    organization: ((cf-organization))
+    org: ((cf-organization))
     space: ((cf-space))
-    skip_cert_check: false
+    cf_cli_version: 7
