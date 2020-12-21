@@ -14,3 +14,5 @@ mkdir built
 cp -r operator/site/public/* ../built/
 mkdir -p ../built/slides
 cp -r operator/slides/public/* ../built/slides/
+
+cp operator/ci/buildpack.yml ../built/
