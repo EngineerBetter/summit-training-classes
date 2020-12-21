@@ -1,3 +1,10 @@
+resource_types:
+- name: cf
+  type: registry-image
+  source:
+    repository: nulldriver/cf-cli-resource
+    tag: latest
+
 resources:
 - name: summit-training-classes
   type: git
@@ -8,11 +15,11 @@ resources:
   type: cf
   source:
     api: ((cf-api))
-    organization: ((cf-org))
+    org: ((cf-org))
     password: ((cf-password))
-    skip_cert_check: false
     space: ((cf-space))
     username: ((cf-username))
+    cf_cli_version: 7
 
 jobs:
 - name: publish
@@ -24,6 +31,8 @@ jobs:
     file: summit-training-classes/basics/ci/build.yml
   - put: cf
     params:
+      command: push
+      strategy: rolling
       manifest: summit-training-classes/basics/ci/manifest.yml
       path: built/
       vars:

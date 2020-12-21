@@ -1,9 +1,6 @@
 ---
 applications:
 - name: basics-workshop
-  buildpacks:
-  - staticfile_buildpack
-  stack: cflinuxfs3
   memory: 64M
   routes:
     ((routes))

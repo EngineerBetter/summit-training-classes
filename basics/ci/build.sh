@@ -3,7 +3,7 @@
 set -ex
 
 pushd basics/site
-  hugo  
+  hugo
 popd
 
 pushd basics/slides
@@ -14,3 +14,5 @@ mkdir built
 cp -r basics/site/public/* ../built/
 mkdir -p ../built/slides
 cp -r basics/slides/public/* ../built/slides/
+
+cp basics/ci/buildpack.yml ../built/
