@@ -1,4 +1,4 @@
 ---
 applications:
 - name: operator-workshop
-  memory: 64M
+  memory: 16M

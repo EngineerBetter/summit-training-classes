@@ -1,6 +1,6 @@
 ---
 applications:
 - name: basics-workshop
-  memory: 64M
+  memory: 16M
   routes:
     ((routes))
