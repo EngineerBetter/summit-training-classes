@@ -2,3 +2,5 @@
 applications:
 - name: operator-workshop
   memory: 16M
+  buildpacks:
+  - staticfile_buildpack
