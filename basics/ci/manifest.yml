@@ -2,5 +2,5 @@
 applications:
 - name: basics-workshop
   memory: 16M
-  routes:
-    ((routes))
+  buildpacks:
+  - staticfile_buildpack

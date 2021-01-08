@@ -1,39 +1,41 @@
-resource_types:
-- name: cf
-  type: registry-image
-  source:
-    repository: nulldriver/cf-cli-resource
-    tag: latest
-
 resources:
 - name: summit-training-classes
   type: git
   source:
+    uri: https://github.com/((github-org))/summit-training-classes.git
     branch: master
-    uri: ((course-repository))
-- name: cf
-  type: cf
+    paths:
+    - basics/*
+
+- name: kf-pipelines
+  type: git
   source:
-    api: ((cf-api))
-    org: ((cf-org))
-    password: ((cf-password))
-    space: ((cf-space))
-    username: ((cf-username))
-    cf_cli_version: 7
+    uri: git@github.com:EngineerBetter/kf-pipelines.git
+    private_key: ((git_private_key))
 
 jobs:
 - name: publish
   public: true
   plan:
-  - get: summit-training-classes
-    trigger: true
+  - in_parallel:
+    - get: summit-training-classes
+      trigger: true
+    - get: kf-pipelines
   - task: generate
     file: summit-training-classes/basics/ci/build.yml
-  - put: cf
+  - task: generate-kubeconfig
+    file: kf-pipelines/ci/tasks/generate-kubeconfig/task.yml
     params:
-      command: push
-      strategy: rolling
-      manifest: summit-training-classes/basics/ci/manifest.yml
-      path: built/
-      vars:
-        routes: ((routes))
+      GOOGLE_CREDENTIALS: ((ebkf-prod-app-developer-creds.gcp_credentials_json))
+      REGION: ((ebkf-prod-app-developer-creds.region))
+      CLUSTER: ((ebkf-prod-app-developer-creds.cluster_name))
+  - &kf-task
+    task: push-sample-app
+    file: kf-pipelines/ci/tasks/kf-cli/task.yml
+    vars:
+      kf_version: ((ebkf-prod-version))
+    input_mapping:
+      input: built
+      manifest: summit-training-classes
+    params:
+      ARGS: push --space production --manifest manifest/basics/ci/manifest.yml --path input --route zero-to-hero.engineerbetter.com
